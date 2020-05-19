@@ -11,7 +11,7 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 
-class SmartCoffeeApp {
+class SmartHeatingApp {
 
     constructor(config, connectionConfigFunction) {
         this.config = config;
