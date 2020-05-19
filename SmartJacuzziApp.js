@@ -11,7 +11,7 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 
-class SmartHeatingApp {
+class SmartJacuzziApp {
 
     constructor(config, connectionConfigFunction) {
         this.config = config;
@@ -23,7 +23,7 @@ class SmartHeatingApp {
 
     initUI() {
         this.firstConnection = true;
-        this.uiSmartCoffeeId = "#smartCoffee";
+        this.uiSmartJacuzziId = "#smartJacuzzi";
         this.registerUICallbacks();
     }
 
@@ -46,7 +46,7 @@ class SmartHeatingApp {
 
     registerUICallbacks() {
         $('#connect').click(() => this.connect(this.connectionConfigFunction()));
-        $(`${this.uiSmartCoffeeId} .dismiss-all`).click(() => this.dismissAllUILogs());
+        $(`${this.uiSmartJacuzziId} .dismiss-all`).click(() => this.dismissAllUILogs());
     }
 
     connect(connectionConfig) {
@@ -59,7 +59,7 @@ class SmartHeatingApp {
     }
 
     dismissAllUILogs() {
-        $(`${this.uiSmartCoffeeId} .alert>button`).click();
+        $(`${this.uiSmartJacuzziId} .alert>button`).click();
     }
 
     /* ***************************************************************** */
@@ -98,57 +98,57 @@ class SmartHeatingApp {
     /* ***************************************************************** */
 
     onJsonMessage(jsonMessage) {
-        if (this.isMakeCoffeeMessage(jsonMessage)) {
-            this.onMakeCoffeeMessage(jsonMessage);
-        } else if (this.isTurnOnWaterTankMessage(jsonMessage)) {
-            this.onTurnOnWaterTankMessage(jsonMessage);
-        } else if (this.isTurnOffWaterTankMessage(jsonMessage)) {
-            this.onTurnOffWaterTankMessage(jsonMessage);
+        if (this.isMakeJacuzziMessage(jsonMessage)) {
+            this.onMakeJacuzziMessage(jsonMessage);
+        } else if (this.isTurnOnWaterTubMessage(jsonMessage)) {
+            this.onTurnOnWaterTubMessage(jsonMessage);
+        } else if (this.isTurnOffWaterTubMessage(jsonMessage)) {
+            this.onTurnOffWaterTubMessage(jsonMessage);
         } else {
             this.logToConsole(`unhandled topic: ${jsonMessage.topic}`);
         }
     }
 
-    isMakeCoffeeMessage(jsonMessage) {
+    isMakeJacuzziMessage(jsonMessage) {
         const thingIdAsPath = this.toPath(this.config.thingId);
-        const makeCoffeeSubject = this.config.coffeeMachine.makeCoffeeSubject;
-        const makeCoffeeTopic = `${thingIdAsPath}/things/live/messages/${makeCoffeeSubject}`;
+        const makeJacuzziSubject = this.config.jacuzziMachine.makeJacuzziSubject;
+        const makeJacuzziTopic = `${thingIdAsPath}/things/live/messages/${makeJacuzziSubject}`;
 
-        return makeCoffeeTopic === jsonMessage.topic;
+        return makeJacuzziTopic === jsonMessage.topic;
     }
 
-    isTurnOnWaterTankMessage(jsonMessage) {
+    isTurnOnWaterTubMessage(jsonMessage) {
         const thingIdAsPath = this.toPath(this.config.thingId);
-        const turnOnWaterTankSubject = this.config.waterTank.onSubject;
-        const waterTankFeature = this.config.waterTank.feature;
-        const turnOnWaterTankTopic = `${thingIdAsPath}/things/live/messages/${turnOnWaterTankSubject}`;
-        const turnOnWaterPath = `/features/${waterTankFeature}/inbox/messages/${turnOnWaterTankSubject}`;
+        const turnOnWaterTubSubject = this.config.waterTub.onSubject;
+        const waterTubFeature = this.config.waterTub.feature;
+        const turnOnWaterTubTopic = `${thingIdAsPath}/things/live/messages/${turnOnWaterTubSubject}`;
+        const turnOnWaterPath = `/features/${waterTubFeature}/inbox/messages/${turnOnWaterTubSubject}`;
 
-        return turnOnWaterTankTopic === jsonMessage.topic &&
+        return turnOnWaterTubTopic === jsonMessage.topic &&
             turnOnWaterPath === jsonMessage.path;
     }
 
-    isTurnOffWaterTankMessage(jsonMessage) {
+    isTurnOffWaterTubMessage(jsonMessage) {
         const thingIdAsPath = this.toPath(this.config.thingId);
-        const turnOffWaterTankSubject = this.config.waterTank.offSubject;
-        const waterTankFeature = this.config.waterTank.feature;
+        const turnOffWaterTubSubject = this.config.waterTub.offSubject;
+        const waterTubFeature = this.config.waterTub.feature;
 
-        const turnOffWaterTankTopic = `${thingIdAsPath}/things/live/messages/${turnOffWaterTankSubject}`;
-        const turnOffWaterPath = `/features/${waterTankFeature}/inbox/messages/${turnOffWaterTankSubject}`;
+        const turnOffWaterTubTopic = `${thingIdAsPath}/things/live/messages/${turnOffWaterTubSubject}`;
+        const turnOffWaterPath = `/features/${waterTubFeature}/inbox/messages/${turnOffWaterTubSubject}`;
 
-        return turnOffWaterTankTopic === jsonMessage.topic &&
+        return turnOffWaterTubTopic === jsonMessage.topic &&
             turnOffWaterPath === jsonMessage.path;
     }
 
-    onMakeCoffeeMessage(jsonMessage) {
-        if (this.isMakeCoffeeCaptchaCorrect(jsonMessage)) {
-            // captcha was correctly solved -> brew the coffee
-            this.brewCoffee();
+    onMakeJacuzziMessage(jsonMessage) {
+        if (this.isMakeJacuzziCaptchaCorrect(jsonMessage)) {
+            // captcha was correctly solved -> brew the jacuzzi
+            this.brewJacuzzi();
 
             const successResponse = JSON.stringify({
                 'captchaSolved': true
             });
-            this.logSendToUI(successResponse, 200, jsonMessage.topic, 'inform that coffee is brewed');
+            this.logSendToUI(successResponse, 200, jsonMessage.topic, 'inform that jacuzzi is brewed');
             this.thing.reply(jsonMessage,
                 successResponse,
                 "application/json",
@@ -156,7 +156,7 @@ class SmartHeatingApp {
         } else {
             // captcha is incorrect -> reply with a new captcha image
             const captcha = this.createCaptchaMessage(b64Captcha());
-            this.logSendToUI(this.createCaptchaMessage('[b64-encoded-captcha-image]'), 400, jsonMessage.topic, 'tell requester to solve captcha to be able to brew a coffee');
+            this.logSendToUI(this.createCaptchaMessage('[b64-encoded-captcha-image]'), 400, jsonMessage.topic, 'tell requester to solve captcha to be able to brew a jacuzzi');
             this.thing.reply(jsonMessage,
                 captcha,
                 'image/png',
@@ -164,23 +164,23 @@ class SmartHeatingApp {
         }
     }
 
-    isMakeCoffeeCaptchaCorrect(jsonMessage) {
+    isMakeJacuzziCaptchaCorrect(jsonMessage) {
         return 'ditto' === jsonMessage.value.captcha;
     }
 
-    brewCoffee() {
+    brewJacuzzi() {
         // update ui
-        this.markCoffeeAsBrewing();
+        this.markJacuzziAsBrewing();
 
         // update brewing counter
-        this.features['coffee-brewer'].properties['brewed-coffees']++;
+        this.features['jacuzzi-brewer'].properties['brewed-jacuzzis']++;
 
         // update brewing counter of twin
         const thingIdAsPath = this.toPath(this.config.thingId);
         const updateFeatureMessage = this.thing.protocolEnvelope(
             `${thingIdAsPath}/things/twin/commands/modify`,
-            'features/coffee-brewer/properties/brewed-coffees',
-            this.features['coffee-brewer'].properties['brewed-coffees']
+            'features/jacuzzi-brewer/properties/brewed-jacuzzis',
+            this.features['jacuzzi-brewer'].properties['brewed-jacuzzis']
         );
         this.logSendToUI(JSON.stringify(updateFeatureMessage), '', updateFeatureMessage.topic, 'update the brewing counter of my twin representation');
         this.thing.send(updateFeatureMessage);
@@ -190,15 +190,15 @@ class SmartHeatingApp {
         return imageToSolve;
     }
 
-    onTurnOnWaterTankMessage(jsonMessage) {
-        this.thing.reply(jsonMessage, this.config.waterTank.successResponse, "application/json", 200);
-        this.logSendToUI(this.config.waterTank.successResponse, 200, jsonMessage.topic, 'tell requester that water tank was successfully turned on');
+    onTurnOnWaterTubMessage(jsonMessage) {
+        this.thing.reply(jsonMessage, this.config.waterTub.successResponse, "application/json", 200);
+        this.logSendToUI(this.config.waterTub.successResponse, 200, jsonMessage.topic, 'tell requester that water tub was successfully turned on');
         this.markWaterAsActive();
     }
 
-    onTurnOffWaterTankMessage(jsonMessage) {
-        this.thing.reply(jsonMessage, this.config.waterTank.successResponse, "application/json", 200);
-        this.logSendToUI(this.config.waterTank.successResponse, 200, jsonMessage.topic, 'tell requester that water tank was successfully turned off');
+    onTurnOffWaterTubMessage(jsonMessage) {
+        this.thing.reply(jsonMessage, this.config.waterTub.successResponse, "application/json", 200);
+        this.logSendToUI(this.config.waterTub.successResponse, 200, jsonMessage.topic, 'tell requester that water tub was successfully turned off');
         this.markWaterAsInactive();
     }
 
@@ -231,8 +231,8 @@ class SmartHeatingApp {
         $('#connect').html(newText);
     }
 
-    markCoffeeAsBrewing() {
-        $("#coffee").addClass("active");
+    markJacuzziAsBrewing() {
+        $("#jacuzzi").addClass("active");
 
         if (isDefined(this.timeoutId)) {
             clearTimeout(this.timeoutId);
@@ -241,7 +241,7 @@ class SmartHeatingApp {
         // stop brewing after some seconds
         const newTimeoutId = setTimeout(
             () => {
-                $("#coffee").removeClass("active");
+                $("#jacuzzi").removeClass("active");
                 clearTimeout(this.timeoutId);
             },
             5000

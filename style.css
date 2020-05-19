@@ -24,7 +24,7 @@
     font-size: 3em;
 }
 
-#coffee.active {
+#jacuzzi.active {
     -webkit-animation: pulsate 1s ease-out;
     -moz-animation: pulsate 1s ease-out;
     -o-animation: pulsate 1s ease-out;

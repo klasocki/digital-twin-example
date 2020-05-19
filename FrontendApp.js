@@ -23,9 +23,9 @@ class FrontendApp {
     initUI() {
         $('#exists').click(() => this.exists());
         $('#create').click(() => this.create());
-        $('#make-coffee').click(() => this.makeCoffee());
-        $('#turn-on-water-tank').click(() => this.turnOnWaterTank());
-        $('#turn-off-water-tank').click(() => this.turnOffWaterTank());
+        $('#make-jacuzzi').click(() => this.makeJacuzzi());
+        $('#turn-on-water-tub').click(() => this.turnOnWaterTub());
+        $('#turn-off-water-tub').click(() => this.turnOffWaterTub());
         $('#restFrontend .dismiss-all').click(() => this.dismissAll());
     }
 
@@ -49,13 +49,13 @@ class FrontendApp {
     /* ********************* UI callbacks ****************************** */
     /* ***************************************************************** */
 
-    turnOnWaterTank() {
+    turnOnWaterTub() {
         this.initConnection();
         const contentType = 'application/json; charset=utf-8';
-        const jsonPayload = JSON.stringify(this.config.waterTank.onPayload);
-        const url = `${this.baseUrl}/features/${this.config.waterTank.feature}/inbox/messages/${this.config.waterTank.onSubject}`;
+        const jsonPayload = JSON.stringify(this.config.waterTub.onPayload);
+        const url = `${this.baseUrl}/features/${this.config.waterTub.feature}/inbox/messages/${this.config.waterTub.onSubject}`;
 
-        this.logSend('POST', url, jsonPayload, contentType, 'ask the SmartCoffee Thing to turn on its water tank');
+        this.logSend('POST', url, jsonPayload, contentType, 'ask the SmartJacuzzi Thing to turn on its water tub');
 
         this.sendAsync($.post({
                 type: "POST",
@@ -63,18 +63,18 @@ class FrontendApp {
                 data: jsonPayload,
                 contentType: contentType,
             }),
-            (data, textStatus, jqXHR) => this.onTurnOnWaterTankSuccess(data, textStatus, jqXHR),
-            (jqXHR, textStatus, errorThrown) => this.onTurnOnWaterTankError(jqXHR, textStatus, errorThrown));
+            (data, textStatus, jqXHR) => this.onTurnOnWaterTubSuccess(data, textStatus, jqXHR),
+            (jqXHR, textStatus, errorThrown) => this.onTurnOnWaterTubError(jqXHR, textStatus, errorThrown));
     }
 
-    turnOffWaterTank() {
+    turnOffWaterTub() {
         this.initConnection();
 
         const contentType = 'application/json; charset=utf-8';
-        const jsonPayload = JSON.stringify(this.config.waterTank.offPayload);
-        const url = `${this.baseUrl}/features/${this.config.waterTank.feature}/inbox/messages/${this.config.waterTank.offSubject}`;
+        const jsonPayload = JSON.stringify(this.config.waterTub.offPayload);
+        const url = `${this.baseUrl}/features/${this.config.waterTub.feature}/inbox/messages/${this.config.waterTub.offSubject}`;
 
-        this.logSend('POST', url, jsonPayload, contentType, 'ask the SmartCoffee Thing to turn on its water tank');
+        this.logSend('POST', url, jsonPayload, contentType, 'ask the SmartJacuzzi Thing to turn on its water tub');
 
         this.sendAsync($.post({
                 type: "POST",
@@ -82,20 +82,20 @@ class FrontendApp {
                 data: jsonPayload,
                 contentType: contentType,
             }),
-            (data, textStatus, jqXHR) => this.onTurnOffWaterTankSuccess(data, textStatus, jqXHR),
-            (jqXHR, textStatus, errorThrown) => this.onTurnOffWaterTankError(jqXHR, textStatus, errorThrown));
+            (data, textStatus, jqXHR) => this.onTurnOffWaterTubSuccess(data, textStatus, jqXHR),
+            (jqXHR, textStatus, errorThrown) => this.onTurnOffWaterTubError(jqXHR, textStatus, errorThrown));
     }
 
-    makeCoffee(captcha = "") {
+    makeJacuzzi(captcha = "") {
         this.initConnection();
-        const payload = this.config.coffeeMachine.makeCoffeePayload;
+        const payload = this.config.jacuzziMachine.makeJacuzziPayload;
         payload.captcha = captcha;
 
         const contentType = "application/json; charset=utf-8";
         const jsonPayload = JSON.stringify(payload);
-        const url = `${this.baseUrl}/inbox/messages/${this.config.coffeeMachine.makeCoffeeSubject}`;
+        const url = `${this.baseUrl}/inbox/messages/${this.config.jacuzziMachine.makeJacuzziSubject}`;
 
-        this.logSend('POST', url, jsonPayload, contentType, 'ask the SmartCoffee Thing to brew me a coffee');
+        this.logSend('POST', url, jsonPayload, contentType, 'ask the SmartJacuzzi Thing to brew me a jacuzzi');
 
 
         this.sendAsync($.post({
@@ -104,15 +104,15 @@ class FrontendApp {
                 data: jsonPayload,
                 contentType: contentType,
             }),
-            (data, textStatus, jqXHR) => this.onMakeCoffeeSuccess(data, textStatus, jqXHR),
-            (jqXHR, textStatus, errorThrown) => this.onMakeCoffeeError(jqXHR, textStatus, errorThrown));
+            (data, textStatus, jqXHR) => this.onMakeJacuzziSuccess(data, textStatus, jqXHR),
+            (jqXHR, textStatus, errorThrown) => this.onMakeJacuzziError(jqXHR, textStatus, errorThrown));
     }
 
     create(onSuccess, onError, thingJson) {
         this.initConnection();
         const payload = JSON.stringify(this.config.thingJson);
         const contentType = "application/json; charset=utf-8";
-        this.logSend('PUT', this.baseUrl, payload, contentType, 'tell Ditto to create the twin for the SmartCoffee Thing');
+        this.logSend('PUT', this.baseUrl, payload, contentType, 'tell Ditto to create the twin for the SmartJacuzzi Thing');
 
         this.sendAsync($.post({
                 type: "PUT",
@@ -126,7 +126,7 @@ class FrontendApp {
 
     exists() {
         this.initConnection();
-        this.logSend('GET', this.baseUrl, undefined, undefined, 'ask Ditto if the twin for the SmartCoffee Thing exists');
+        this.logSend('GET', this.baseUrl, undefined, undefined, 'ask Ditto if the twin for the SmartJacuzzi Thing exists');
         this.sendAsync($.getJSON(this.baseUrl),
             (data, textStatus, jqXHR) => this.onExistsSuccess(data, textStatus, jqXHR),
             (jqXHR, textStatus, errorThrown) => this.onExistsError(jqXHR, textStatus, errorThrown));
@@ -136,32 +136,32 @@ class FrontendApp {
     /* ********************* REST callbacks **************************** */
     /* ***************************************************************** */
 
-    onTurnOnWaterTankSuccess(data, textStatus, jqXHR) {
-        this.logToConsole('turn on water tank success');
+    onTurnOnWaterTubSuccess(data, textStatus, jqXHR) {
+        this.logToConsole('turn on water tub success');
     }
 
-    onTurnOnWaterTankError(jqXHR, textStatus, errorThrown) {
-        this.logToConsole(`turn on water tank error ${jqXHR}`);
+    onTurnOnWaterTubError(jqXHR, textStatus, errorThrown) {
+        this.logToConsole(`turn on water tub error ${jqXHR}`);
     }
 
-    onTurnOffWaterTankSuccess(data, textStatus, jqXHR) {
-        this.logToConsole('turn off water tank success');
+    onTurnOffWaterTubSuccess(data, textStatus, jqXHR) {
+        this.logToConsole('turn off water tub success');
     }
 
-    onTurnOffWaterTankError(jqXHR, textStatus, errorThrown) {
-        this.logToConsole(`turn off water tank error ${jqXHR}`);
+    onTurnOffWaterTubError(jqXHR, textStatus, errorThrown) {
+        this.logToConsole(`turn off water tub error ${jqXHR}`);
     }
 
-    onMakeCoffeeSuccess(data, textStatus, jqXHR) {
-        this.logToConsole('make coffee success');
+    onMakeJacuzziSuccess(data, textStatus, jqXHR) {
+        this.logToConsole('make jacuzzi success');
     }
 
-    onMakeCoffeeError(jqXHR, textStatus, errorThrown) {
+    onMakeJacuzziError(jqXHR, textStatus, errorThrown) {
         if (this.isCaptchaResponse(jqXHR)) {
             const captcha = this.getCaptchaFromResponse(jqXHR);
-            this.solveCaptcha(captcha, (solved) => this.makeCoffee(solved));
+            this.solveCaptcha(captcha, (solved) => this.makeJacuzzi(solved));
         } else {
-            this.logToConsole(`make coffee error ${textStatus}`);
+            this.logToConsole(`make jacuzzi error ${textStatus}`);
         }
     }
 

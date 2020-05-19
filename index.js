@@ -1,71 +1,59 @@
-/*
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
- *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0
- *
- * SPDX-License-Identifier: EPL-2.0
- */
-
 class App {
     constructor() {
         this.config = {
-            "thingId": "org.eclipse.ditto:smartcoffee",
+            "thingId": "org.eclipse.ditto:smartjacuzzi",
             "thingJson": {
                 "attributes": {
                     "manufacturer": "Ditto demo device corp.",
-                    "model": "Speaking coffee machine"
+                    "model": "Smart house jacuzzi",
+                    "capacity": 719
                 },
                 "features": {
-                    "water-tank": {
+                    "water-tub": {
                         "properties": {
                             "configuration": {
                                 "smartMode": true,
-                                "brewingTemp": 87,
-                                "tempToHold": 44,
+                                "targetTemp": 40,
+                                "tempToHold": 21,
                                 "timeoutSeconds": 6000
                             },
                             "status": {
-                                "waterAmount": 731,
-                                "temperature": 44
+                                "waterAmount": 550,
+                                "temperature": 21
                             }
                         }
                     },
-                    "coffee-brewer": {
+                    "bubble-maker": {
                         "properties": {
-                            "brewed-coffees": 0
+                            "turned-on-counter": 0
                         }
                     }
                 }
             },
-            "waterTank": {
-                "feature": "water-tank",
-                "onSubject": "startHeating",
+            "waterTub": {
+                "feature": "water-tub",
+                "onSubject": "startJacuzzi",
                 "onPayload": {
-                    "temperature": 85
+                    "temperature": 40
                 },
-                "offSubject": "stopHeating",
-                "offPayload": {},
+                "offSubject": "stopJacuzzi",
+                "offPayload": {
+                    "temperature": 21
+                },
                 "successResponse": true,
                 "failureResponse": false
             },
-            "coffeeMachine": {
-                "makeCoffeeSubject": "makeCoffee",
-                "makeCoffeePayload": {
-                    "cups": 1,
-                    "strength": 0.8,
-                    "amount": 230,
+            "bubbleMachine": {
+                "makeBubblesSubject": "makeBubbles",
+                "makeBubblesPayload": {
+                    "strength": 0.7,
                     "captcha": ""
                 }
             }
         };
 
         this.frontend = new FrontendApp(this.config, () => this.getConnectionConfig());
-        this.smartCoffeeApp = new SmartCoffeeApp(this.config, () => this.getConnectionConfig());
+        this.smartJacuzziApp = new SmartJacuzziApp(this.config, () => this.getConnectionConfig());
     }
 
     getConnectionConfig() {
