@@ -88,12 +88,12 @@ class FrontendApp {
 
     makeBubbles(captcha = "") {
         this.initConnection();
-        const payload = this.config.jacuzziMachine.makeBubblesPayload;
+        const payload = this.config.bubbleMachine.makeBubblesPayload;
         payload.captcha = captcha;
 
         const contentType = "application/json; charset=utf-8";
         const jsonPayload = JSON.stringify(payload);
-        const url = `${this.baseUrl}/inbox/messages/${this.config.jacuzziMachine.makeBubblesSubject}`;
+        const url = `${this.baseUrl}/inbox/messages/${this.config.bubbleMachine.makeBubblesSubject}`;
 
         this.logSend('POST', url, jsonPayload, contentType, 'ask the SmartJacuzzi Thing to add bubbles');
 

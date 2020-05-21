@@ -140,7 +140,7 @@ class SmartJacuzziApp {
             turnOffWaterPath === jsonMessage.path;
     }
 
-    onMakeJacuzziMessage(jsonMessage) {
+    onMakeBubblesMessage(jsonMessage) {
         if (this.isMakeJacuzziCaptchaCorrect(jsonMessage)) {
             // captcha was correctly solved -> add bubbles
             this.makeBubbles();
@@ -173,14 +173,14 @@ class SmartJacuzziApp {
         this.markJacuzziAsBubbling();
 
         // update brewing counter
-        this.features['jacuzzi-bubbles'].properties['bubbles']++;
+        this.features['bubble-maker'].properties['turned-on-counter']++;
 
         // update brewing counter of twin
         const thingIdAsPath = this.toPath(this.config.thingId);
         const updateFeatureMessage = this.thing.protocolEnvelope(
             `${thingIdAsPath}/things/twin/commands/modify`,
-            'features/jacuzzi-bubbles/properties/added-bubbles',
-            this.features['jacuzzi-bubbles'].properties['bubbles']
+            'features/bubble-maker/properties/turned-on-counter',
+	    this.features['bubble-maker'].properties['turned-on-counter']
         );
         this.logSendToUI(JSON.stringify(updateFeatureMessage), '', updateFeatureMessage.topic, 'update the brewing counter of my twin representation');
         this.thing.send(updateFeatureMessage);
