@@ -99,7 +99,7 @@ class SmartJacuzziApp {
 
     onJsonMessage(jsonMessage) {
         if (this.isMakeBubblesMessage(jsonMessage)) {
-            this.onMakeJacuzziMessage(jsonMessage);
+            this.onMakeBubblesMessage(jsonMessage);
         } else if (this.isTurnOnWaterTubMessage(jsonMessage)) {
             this.onTurnOnWaterTubMessage(jsonMessage);
         } else if (this.isTurnOffWaterTubMessage(jsonMessage)) {
@@ -111,7 +111,7 @@ class SmartJacuzziApp {
 
     isMakeBubblesMessage(jsonMessage) {
         const thingIdAsPath = this.toPath(this.config.thingId);
-        const makeBubblesSubject = this.config.jacuzziMachine.makeBubblesSubject;
+        const makeBubblesSubject = this.config.bubbleMachine.makeBubblesSubject;
         const makeJacuzziTopic = `${thingIdAsPath}/things/live/messages/${makeBubblesSubject}`;
 
         return makeJacuzziTopic === jsonMessage.topic;

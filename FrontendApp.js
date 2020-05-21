@@ -23,7 +23,7 @@ class FrontendApp {
     initUI() {
         $('#exists').click(() => this.exists());
         $('#create').click(() => this.create());
-        $('#make-jacuzzi').click(() => this.makeJacuzzi());
+        $('#make-bubbles').click(() => this.makeBubbles());
         $('#turn-on-water-tub').click(() => this.turnOnWaterTub());
         $('#turn-off-water-tub').click(() => this.turnOffWaterTub());
         $('#restFrontend .dismiss-all').click(() => this.dismissAll());
@@ -86,16 +86,16 @@ class FrontendApp {
             (jqXHR, textStatus, errorThrown) => this.onTurnOffWaterTubError(jqXHR, textStatus, errorThrown));
     }
 
-    makeJacuzzi(captcha = "") {
+    makeBubbles(captcha = "") {
         this.initConnection();
-        const payload = this.config.jacuzziMachine.makeJacuzziPayload;
+        const payload = this.config.jacuzziMachine.makeBubblesPayload;
         payload.captcha = captcha;
 
         const contentType = "application/json; charset=utf-8";
         const jsonPayload = JSON.stringify(payload);
-        const url = `${this.baseUrl}/inbox/messages/${this.config.jacuzziMachine.makeJacuzziSubject}`;
+        const url = `${this.baseUrl}/inbox/messages/${this.config.jacuzziMachine.makeBubblesSubject}`;
 
-        this.logSend('POST', url, jsonPayload, contentType, 'ask the SmartJacuzzi Thing to brew me a jacuzzi');
+        this.logSend('POST', url, jsonPayload, contentType, 'ask the SmartJacuzzi Thing to add bubbles');
 
 
         this.sendAsync($.post({
@@ -104,8 +104,8 @@ class FrontendApp {
                 data: jsonPayload,
                 contentType: contentType,
             }),
-            (data, textStatus, jqXHR) => this.onMakeJacuzziSuccess(data, textStatus, jqXHR),
-            (jqXHR, textStatus, errorThrown) => this.onMakeJacuzziError(jqXHR, textStatus, errorThrown));
+            (data, textStatus, jqXHR) => this.onMakeBubblesSuccess(data, textStatus, jqXHR),
+            (jqXHR, textStatus, errorThrown) => this.onMakeBubblesError(jqXHR, textStatus, errorThrown));
     }
 
     create(onSuccess, onError, thingJson) {
@@ -152,14 +152,14 @@ class FrontendApp {
         this.logToConsole(`turn off water tub error ${jqXHR}`);
     }
 
-    onMakeJacuzziSuccess(data, textStatus, jqXHR) {
+    onMakeBubblesSuccess(data, textStatus, jqXHR) {
         this.logToConsole('make jacuzzi success');
     }
 
-    onMakeJacuzziError(jqXHR, textStatus, errorThrown) {
+    onMakeBubblesError(jqXHR, textStatus, errorThrown) {
         if (this.isCaptchaResponse(jqXHR)) {
             const captcha = this.getCaptchaFromResponse(jqXHR);
-            this.solveCaptcha(captcha, (solved) => this.makeJacuzzi(solved));
+            this.solveCaptcha(captcha, (solved) => this.makeBubbles(solved));
         } else {
             this.logToConsole(`make jacuzzi error ${textStatus}`);
         }
