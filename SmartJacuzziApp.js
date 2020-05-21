@@ -98,7 +98,7 @@ class SmartJacuzziApp {
     /* ***************************************************************** */
 
     onJsonMessage(jsonMessage) {
-        if (this.isMakeJacuzziMessage(jsonMessage)) {
+        if (this.isMakeBubblesMessage(jsonMessage)) {
             this.onMakeJacuzziMessage(jsonMessage);
         } else if (this.isTurnOnWaterTubMessage(jsonMessage)) {
             this.onTurnOnWaterTubMessage(jsonMessage);
@@ -109,10 +109,10 @@ class SmartJacuzziApp {
         }
     }
 
-    isMakeJacuzziMessage(jsonMessage) {
+    isMakeBubblesMessage(jsonMessage) {
         const thingIdAsPath = this.toPath(this.config.thingId);
-        const makeJacuzziSubject = this.config.jacuzziMachine.makeJacuzziSubject;
-        const makeJacuzziTopic = `${thingIdAsPath}/things/live/messages/${makeJacuzziSubject}`;
+        const makeBubblesSubject = this.config.jacuzziMachine.makeBubblesSubject;
+        const makeJacuzziTopic = `${thingIdAsPath}/things/live/messages/${makeBubblesSubject}`;
 
         return makeJacuzziTopic === jsonMessage.topic;
     }
@@ -142,13 +142,13 @@ class SmartJacuzziApp {
 
     onMakeJacuzziMessage(jsonMessage) {
         if (this.isMakeJacuzziCaptchaCorrect(jsonMessage)) {
-            // captcha was correctly solved -> brew the jacuzzi
-            this.brewJacuzzi();
+            // captcha was correctly solved -> add bubbles
+            this.makeBubbles();
 
             const successResponse = JSON.stringify({
                 'captchaSolved': true
             });
-            this.logSendToUI(successResponse, 200, jsonMessage.topic, 'inform that jacuzzi is brewed');
+            this.logSendToUI(successResponse, 200, jsonMessage.topic, 'inform that jacuzzi has new bubbles');
             this.thing.reply(jsonMessage,
                 successResponse,
                 "application/json",
@@ -156,7 +156,7 @@ class SmartJacuzziApp {
         } else {
             // captcha is incorrect -> reply with a new captcha image
             const captcha = this.createCaptchaMessage(b64Captcha());
-            this.logSendToUI(this.createCaptchaMessage('[b64-encoded-captcha-image]'), 400, jsonMessage.topic, 'tell requester to solve captcha to be able to brew a jacuzzi');
+            this.logSendToUI(this.createCaptchaMessage('[b64-encoded-captcha-image]'), 400, jsonMessage.topic, 'tell requester to solve captcha to be able to add bubbles to jacuzzi');
             this.thing.reply(jsonMessage,
                 captcha,
                 'image/png',
@@ -168,19 +168,19 @@ class SmartJacuzziApp {
         return 'ditto' === jsonMessage.value.captcha;
     }
 
-    brewJacuzzi() {
+    makeBubbles() {
         // update ui
-        this.markJacuzziAsBrewing();
+        this.markJacuzziAsBubbling();
 
         // update brewing counter
-        this.features['jacuzzi-brewer'].properties['brewed-jacuzzis']++;
+        this.features['jacuzzi-bubbles'].properties['bubbles']++;
 
         // update brewing counter of twin
         const thingIdAsPath = this.toPath(this.config.thingId);
         const updateFeatureMessage = this.thing.protocolEnvelope(
             `${thingIdAsPath}/things/twin/commands/modify`,
-            'features/jacuzzi-brewer/properties/brewed-jacuzzis',
-            this.features['jacuzzi-brewer'].properties['brewed-jacuzzis']
+            'features/jacuzzi-bubbles/properties/added-bubbles',
+            this.features['jacuzzi-bubbles'].properties['bubbles']
         );
         this.logSendToUI(JSON.stringify(updateFeatureMessage), '', updateFeatureMessage.topic, 'update the brewing counter of my twin representation');
         this.thing.send(updateFeatureMessage);
@@ -231,7 +231,7 @@ class SmartJacuzziApp {
         $('#connect').html(newText);
     }
 
-    markJacuzziAsBrewing() {
+    markJacuzziAsBubbling() {
         $("#jacuzzi").addClass("active");
 
         if (isDefined(this.timeoutId)) {
